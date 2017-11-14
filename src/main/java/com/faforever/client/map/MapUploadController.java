@@ -15,6 +15,7 @@ import com.faforever.commons.map.PreviewGenerator;
 import com.google.common.eventbus.EventBus;
 import javafx.beans.binding.Bindings;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
@@ -136,6 +137,9 @@ public class MapUploadController implements Controller<Node> {
     );
 
     thumbnailImageView.setImage(generatePreview(mapPath));
+    Insets padding = getRoot().getPadding();
+    mapInfoPane.heightProperty().addListener((observable, oldValue, newValue) -> getRoot().setMinHeight(newValue.doubleValue() + padding.getBottom() + padding.getTop()));
+    getRoot().setMinWidth(mapInfoPane.getPrefWidth() + padding.getLeft() + padding.getRight());
   }
 
   private void enterMapInfoState() {

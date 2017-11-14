@@ -224,6 +224,9 @@ public class MapVaultController extends AbstractViewController<Node> {
     mapUploadWindow.initOwner(getRoot().getScene().getWindow());
 
     WindowController windowController = uiService.loadFxml("theme/window.fxml");
+    mapUploadController.getRoot().minWidthProperty().addListener((observable, oldValue, newValue) -> mapUploadWindow.setWidth(newValue.doubleValue()));
+    mapUploadController.getRoot().minHeightProperty().addListener((observable, oldValue, newValue) -> mapUploadWindow.setHeight(newValue.doubleValue()));
+
     windowController.configure(mapUploadWindow, mapUploadController.getRoot(), true, CLOSE);
 
     mapUploadWindow.show();
