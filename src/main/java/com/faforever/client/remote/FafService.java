@@ -146,4 +146,6 @@ public interface FafService {
   CompletableFuture<Void> deleteModVersionReview(Review review);
 
   CompletableFuture<Optional<Replay>> findReplayById(int id);
+
+  CompletableFuture<List<MapBean>> getLadder1v1Maps(int count, int page);
 }

@@ -11,7 +11,7 @@
    <children>
       <TabPane fx:id="vaultRoot" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" rotateGraphic="true" side="LEFT" tabClosingPolicy="UNAVAILABLE" tabMaxHeight="200.0" tabMinHeight="200.0">
           <tabs>
-              <Tab>
+              <Tab fx:id="mapVaultTab">
                   <fx:include fx:id="mapVault" source="map/map_vault.fxml" />
                   <graphic>
                       <Group>

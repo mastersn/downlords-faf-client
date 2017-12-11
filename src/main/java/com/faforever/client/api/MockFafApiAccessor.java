@@ -12,6 +12,7 @@ import com.faforever.client.api.dto.GamePlayerStats;
 import com.faforever.client.api.dto.GameReview;
 import com.faforever.client.api.dto.GlobalLeaderboardEntry;
 import com.faforever.client.api.dto.Ladder1v1LeaderboardEntry;
+import com.faforever.client.api.dto.Ladder1v1Map;
 import com.faforever.client.api.dto.Map;
 import com.faforever.client.api.dto.MapVersion;
 import com.faforever.client.api.dto.MapVersionReview;
@@ -253,6 +254,11 @@ public class MockFafApiAccessor implements FafApiAccessor {
 
   @Override
   public Optional<Game> findReplayById(int id) {
+    return null;
+  }
+
+  @Override
+  public List<Ladder1v1Map> getLadder1v1Maps(int count, int page) {
     return null;
   }
 

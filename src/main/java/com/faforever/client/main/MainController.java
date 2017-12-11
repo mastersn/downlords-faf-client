@@ -455,6 +455,7 @@ public class MainController implements Controller<Node> {
   public void onNavigateEvent(NavigateEvent navigateEvent) {
     NavigationItem item = navigateEvent.getItem();
     AbstractViewController<?> controller = loadView(item);
+    controller.setParamenterToBeNotified(navigateEvent.getParameter());
 
     setContent(controller.getRoot());
 
