@@ -16,6 +16,7 @@ import com.faforever.client.theme.UiService;
 import com.faforever.client.vault.search.SearchController;
 import com.faforever.client.vault.search.SearchController.SearchConfig;
 import com.faforever.client.vault.search.SearchController.SortConfig;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Iterators;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
@@ -74,7 +75,7 @@ public class MapVaultController extends AbstractViewController<Node> {
   private final PreferencesService preferencesService;
   private final UiService uiService;
   private final NotificationService notificationService;
-
+  private final ObjectProperty<State> state;
   public Pane searchResultGroup;
   public Pane searchResultPane;
   public Pane showroomGroup;
@@ -87,11 +88,10 @@ public class MapVaultController extends AbstractViewController<Node> {
   public Button backButton;
   public SearchController searchController;
   public Button moreButton;
-  private final ObjectProperty<State> state;
-
-  private boolean initialized;
-  private MapDetailController mapDetailController;
   public FlowPane ladderPane;
+  @VisibleForTesting
+  boolean initialized;
+  private MapDetailController mapDetailController;
   private String query;
   private int currentPage;
   private Supplier<CompletableFuture<List<MapBean>>> currentSupplier;
