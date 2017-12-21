@@ -44,11 +44,11 @@ public enum NewsCategory {
     if (string == null) {
       return null;
     }
-    string = string.toLowerCase(Locale.US);
-    if (!fromString.containsKey(string)) {
+    String toLower = string.toLowerCase(Locale.US);
+    if (!fromString.containsKey(toLower)) {
       return NewsCategory.UNCATEGORIZED;
     }
-    return fromString.get(string);
+    return fromString.get(toLower);
   }
 
   public String getImagePath() {

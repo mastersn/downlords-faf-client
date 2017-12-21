@@ -7,9 +7,7 @@ import com.faforever.client.game.GameService;
 import com.faforever.client.i18n.I18n;
 import com.faforever.client.leaderboard.LeaderboardService;
 import com.faforever.client.leaderboard.RatingStat;
-import com.faforever.client.main.NavigateEvent;
-import com.faforever.client.main.NavigateEvent.Parameter;
-import com.faforever.client.main.NavigationItem;
+import com.faforever.client.main.event.ShowLadderMapsEvent;
 import com.faforever.client.player.Player;
 import com.faforever.client.player.PlayerService;
 import com.faforever.client.preferences.PreferencesService;
@@ -317,6 +315,6 @@ public class Ladder1v1Controller extends AbstractViewController<Node> {
   }
 
   public void showLadderMaps(ActionEvent actionEvent) {
-    eventBus.post(new NavigateEvent(NavigationItem.VAULT, Parameter.SHOW_LADDER_MAPS));
+    eventBus.post(new ShowLadderMapsEvent());
   }
 }

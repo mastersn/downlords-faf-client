@@ -1,7 +1,7 @@
 package com.faforever.client.map;
 
 import com.faforever.client.i18n.I18n;
-import com.faforever.client.main.NavigateEvent.Parameter;
+import com.faforever.client.main.event.ShowLadderMapsEvent;
 import com.faforever.client.notification.NotificationService;
 import com.faforever.client.preferences.Preferences;
 import com.faforever.client.preferences.PreferencesService;
@@ -136,7 +136,7 @@ public class MapVaultControllerTest extends AbstractPlainJavaFxTest {
   }
 
   @Test
-  public void testNotifyPropertyShowLadder() throws Exception {
+  public void testNotifyPropertyShowLadderInitialized() throws Exception {
     List<MapBean> maps = new ArrayList<>();
     for (int i = 0; i < 5; i++) {
       maps.add(
@@ -149,9 +149,12 @@ public class MapVaultControllerTest extends AbstractPlainJavaFxTest {
     }
     when(mapService.getLadderMaps(anyInt(), eq(1))).thenReturn(CompletableFuture.completedFuture(maps));
     instance.initialized = true;
-    instance.notifyOfParameter(Parameter.SHOW_LADDER_MAPS);
+    instance.onEvent(
+        new ShowLadderMapsEvent());
+
 
     WaitForAsyncUtils.waitForFxEvents();
     verify(mapService).getLadderMaps(100, 1);
   }
+
 }

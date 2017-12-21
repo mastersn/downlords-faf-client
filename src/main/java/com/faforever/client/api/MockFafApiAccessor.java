@@ -259,7 +259,7 @@ public class MockFafApiAccessor implements FafApiAccessor {
 
   @Override
   public List<Ladder1v1Map> getLadder1v1Maps(int count, int page) {
-    return null;
+    return Collections.emptyList();
   }
 
   @Override

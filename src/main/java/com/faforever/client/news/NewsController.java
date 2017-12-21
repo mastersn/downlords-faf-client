@@ -3,9 +3,7 @@ package com.faforever.client.news;
 import com.faforever.client.fx.AbstractViewController;
 import com.faforever.client.fx.WebViewConfigurer;
 import com.faforever.client.i18n.I18n;
-import com.faforever.client.main.NavigateEvent;
-import com.faforever.client.main.NavigateEvent.Parameter;
-import com.faforever.client.main.NavigationItem;
+import com.faforever.client.main.event.ShowLadderMapsEvent;
 import com.faforever.client.preferences.PreferencesService;
 import com.faforever.client.theme.UiService;
 import com.google.common.eventbus.EventBus;
@@ -107,6 +105,6 @@ public class NewsController extends AbstractViewController<Node> {
   }
 
   public void showLadderMaps(ActionEvent actionEvent) {
-    eventBus.post(new NavigateEvent(NavigationItem.VAULT, Parameter.SHOW_LADDER_MAPS));
+    eventBus.post(new ShowLadderMapsEvent());
   }
 }

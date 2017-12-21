@@ -1,7 +1,8 @@
 package com.faforever.client.vault;
 
 import com.faforever.client.fx.AbstractViewController;
-import com.faforever.client.main.NavigateEvent.Parameter;
+import com.faforever.client.main.event.NavigateEvent;
+import com.faforever.client.main.event.OpenMapVaultEvent;
 import com.faforever.client.map.MapVaultController;
 import com.faforever.client.mod.ModVaultController;
 import com.faforever.client.replay.OnlineReplayVaultController;
@@ -29,11 +30,13 @@ public class VaultController extends AbstractViewController<Node> {
   }
 
   @Override
-  public void notifyOfParameter(Parameter parameter) {
-    super.notifyOfParameter(parameter);
-    if (parameter.equals(Parameter.SHOW_LADDER_MAPS)) {
-      mapVaultController.notifyOfParameter(Parameter.SHOW_LADDER_MAPS);
+  public void onEvent(NavigateEvent event) {
+
+    if (event instanceof OpenMapVaultEvent) {
+      mapVaultController.setEvent(event);
       vaultRoot.getSelectionModel().select(mapVaultTab);
+      mapVaultController.onEvent(event);
     }
+
   }
 }

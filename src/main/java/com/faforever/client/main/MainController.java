@@ -10,6 +10,8 @@ import com.faforever.client.fx.WindowController;
 import com.faforever.client.game.GameService;
 import com.faforever.client.i18n.I18n;
 import com.faforever.client.login.LoginController;
+import com.faforever.client.main.event.NavigateEvent;
+import com.faforever.client.main.event.NavigationItem;
 import com.faforever.client.news.UnreadNewsEvent;
 import com.faforever.client.notification.ImmediateNotification;
 import com.faforever.client.notification.ImmediateNotificationController;
@@ -455,9 +457,11 @@ public class MainController implements Controller<Node> {
   public void onNavigateEvent(NavigateEvent navigateEvent) {
     NavigationItem item = navigateEvent.getItem();
     AbstractViewController<?> controller = loadView(item);
-    controller.setParamenterToBeNotified(navigateEvent.getParameter());
-
+    controller.setEvent(navigateEvent);
     setContent(controller.getRoot());
+    if (currentItem == item) {
+      controller.onEvent(navigateEvent);
+    }
 
     mainNavigation.getToggles().stream()
         .filter(toggle -> toggle.getUserData() == navigateEvent.getItem())

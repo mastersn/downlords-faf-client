@@ -4,7 +4,8 @@ import com.faforever.client.fx.AbstractViewController;
 import com.faforever.client.fx.JavaFxUtil;
 import com.faforever.client.fx.WindowController;
 import com.faforever.client.i18n.I18n;
-import com.faforever.client.main.NavigateEvent.Parameter;
+import com.faforever.client.main.event.NavigateEvent;
+import com.faforever.client.main.event.ShowLadderMapsEvent;
 import com.faforever.client.map.event.MapUploadedEvent;
 import com.faforever.client.notification.DismissAction;
 import com.faforever.client.notification.ImmediateNotification;
@@ -139,21 +140,9 @@ public class MapVaultController extends AbstractViewController<Node> {
     showLadderMapsListener = (observable, oldValue, newValue) -> {
       if (initialized && newValue.equals(State.SHOWROOM)) {
         state.removeListener(showLadderMapsListener);
-        showLadderdMaps();
+        showMoreLadderdMaps();
       }
     };
-  }
-
-  @Override
-  public void notifyOfParameter(Parameter parameter) {
-    super.notifyOfParameter(parameter);
-    if (parameter.equals(Parameter.SHOW_LADDER_MAPS)) {
-      if (initialized) {
-        showLadderdMaps();
-      } else {
-        state.addListener(showLadderMapsListener);
-      }
-    }
   }
 
   private void searchByQuery(SearchConfig searchConfig) {
@@ -170,7 +159,18 @@ public class MapVaultController extends AbstractViewController<Node> {
     }
     initialized = true;
     displayShowroomMaps();
+  }
 
+  @Override
+  public void onEvent(NavigateEvent event) {
+    super.onEvent(event);
+    if (event instanceof ShowLadderMapsEvent) {
+      if (initialized) {
+        showMoreLadderdMaps();
+      } else {
+        state.addListener(showLadderMapsListener);
+      }
+    }
   }
 
   private void displayShowroomMaps() {
@@ -294,7 +294,7 @@ public class MapVaultController extends AbstractViewController<Node> {
     displayMapsFromSupplier(() -> mapService.getMostPlayedMaps(LOAD_MORE_COUNT, ++currentPage));
   }
 
-  public void showLadderdMaps() {
+  public void showMoreLadderdMaps() {
     enterLoadingState();
     displayMapsFromSupplier(() -> mapService.getLadderMaps(LOAD_MORE_COUNT, ++currentPage));
   }
@@ -355,6 +355,7 @@ public class MapVaultController extends AbstractViewController<Node> {
           return null;
         });
   }
+
 
   private enum State {
     LOADING, SHOWROOM, SEARCH_RESULT
