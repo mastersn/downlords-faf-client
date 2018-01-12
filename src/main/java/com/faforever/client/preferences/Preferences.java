@@ -33,6 +33,8 @@ public class Preferences {
   private final StringProperty lastGameTitle;
   private final StringProperty lastMap;
   private final BooleanProperty rememberLastTab;
+  private final BooleanProperty showPasswordProtectedGames;
+  private final BooleanProperty showModdedGames;
   private final ListProperty<String> ignoredNotifications;
   private final IntegerProperty lastGameMinRating;
   private final IntegerProperty lastGameMaxRating;
@@ -67,7 +69,8 @@ public class Preferences {
     developer = new DeveloperPrefs();
     gameListSorting = new SimpleListProperty<>(observableArrayList());
     vaultPrefs = new VaultPrefs();
-
+    showPasswordProtectedGames = new SimpleBooleanProperty(true);
+    showModdedGames = new SimpleBooleanProperty(true);
   }
 
   public VaultPrefs getVaultPrefs() {
@@ -85,6 +88,14 @@ public class Preferences {
 
   public ObjectProperty<TilesSortingOrder> gameTileSortingOrderProperty() {
     return gameTileSortingOrder;
+  }
+
+  public BooleanProperty showPasswordProtectedGamesProperty() {
+    return showPasswordProtectedGames;
+  }
+
+  public BooleanProperty showModdedGamesProperty() {
+    return showModdedGames;
   }
 
   public String getGamesViewMode() {

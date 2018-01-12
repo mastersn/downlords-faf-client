@@ -12,9 +12,10 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.WeakChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
-import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -56,6 +57,7 @@ public class CustomGamesController implements Controller<Node> {
   private final PreferencesService preferencesService;
   private final EventBus eventBus;
   private final I18n i18n;
+  public GameDetailController gameDetailController;
 
   public ToggleButton tableButton;
   public ToggleButton tilesButton;
@@ -64,10 +66,14 @@ public class CustomGamesController implements Controller<Node> {
   public Pane gameViewContainer;
   public Pane gamesRoot;
   public ScrollPane gameDetailPane;
-  public GameDetailController gameDetailController;
   public ChoiceBox<TilesSortingOrder> chooseSortingTypeChoiceBox;
 
-  private FilteredList<Game> filteredItems;
+  @VisibleForTesting
+  FilteredList<Game> filteredItems;
+
+  public CheckBox showModdedGamesCheckBox;
+  public CheckBox showPasswordProtectedGamesCheckBox;
+  private final ChangeListener<Boolean> filterConditionsChangedListener = (observable, oldValue, newValue) -> updateFilteredItems();
 
   @Inject
   public CustomGamesController(UiService uiService, GameService gameService, PreferencesService preferencesService,
@@ -96,7 +102,12 @@ public class CustomGamesController implements Controller<Node> {
     ObservableList<Game> games = gameService.getGames();
 
     filteredItems = new FilteredList<>(games);
-    filteredItems.setPredicate(OPEN_CUSTOM_GAMES_PREDICATE);
+    showModdedGamesCheckBox.selectedProperty().bindBidirectional(preferencesService.getPreferences().showModdedGamesProperty());
+    showPasswordProtectedGamesCheckBox.selectedProperty().bindBidirectional(preferencesService.getPreferences().showPasswordProtectedGamesProperty());
+
+    updateFilteredItems();
+    preferencesService.getPreferences().showModdedGamesProperty().addListener(new WeakChangeListener<>(filterConditionsChangedListener));
+    preferencesService.getPreferences().showPasswordProtectedGamesProperty().addListener(new WeakChangeListener<>(filterConditionsChangedListener));
 
     if (tilesButton.getId().equals(preferencesService.getPreferences().getGamesViewMode())) {
       viewToggleGroup.selectToggle(tilesButton);
@@ -122,14 +133,15 @@ public class CustomGamesController implements Controller<Node> {
     eventBus.register(this);
   }
 
-  public void onShowPrivateGames(ActionEvent actionEvent) {
-    CheckBox checkBox = (CheckBox) actionEvent.getSource();
-    boolean selected = checkBox.isSelected();
-    if (selected) {
-      filteredItems.setPredicate(OPEN_CUSTOM_GAMES_PREDICATE);
-    } else {
-      filteredItems.setPredicate(OPEN_CUSTOM_GAMES_PREDICATE.and(gameInfoBean -> !gameInfoBean.getPasswordProtected()));
-    }
+  private void updateFilteredItems() {
+    preferencesService.storeInBackground();
+
+    boolean showPasswordProtectedGames = showPasswordProtectedGamesCheckBox.isSelected();
+    boolean showModdedGames = showModdedGamesCheckBox.isSelected();
+
+    filteredItems.setPredicate(OPEN_CUSTOM_GAMES_PREDICATE.and(gameInfoBean ->
+        (showPasswordProtectedGames || !gameInfoBean.getPasswordProtected())
+        && (showModdedGames || gameInfoBean.getSimMods().isEmpty())));
   }
 
   public void onCreateGameButtonClicked() {
@@ -203,5 +215,10 @@ public class CustomGamesController implements Controller<Node> {
     }
 
     gameDetailPane.setVisible(true);
+  }
+
+  @VisibleForTesting
+  void setFilteredList(ObservableList<Game> games) {
+    filteredItems = new FilteredList<>(games, s -> true);
   }
 }
