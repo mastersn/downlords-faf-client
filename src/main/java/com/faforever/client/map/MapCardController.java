@@ -40,6 +40,7 @@ public class MapCardController implements Controller<Node> {
   public Label numberOfPlaysLabel;
   public Label sizeLabel;
   public Label maxPlayersLabel;
+  public Label installedLabel;
 
   private MapBean map;
   private Consumer<MapBean> onOpenDetailListener;
@@ -57,13 +58,13 @@ public class MapCardController implements Controller<Node> {
     installedMapsChangeListener = change -> {
       while (change.next()) {
         for (MapBean mapBean : change.getAddedSubList()) {
-          if (map.getId().equals(mapBean.getId())) {
+          if(map.getFolderName().equals(mapBean.getFolderName())){
             setInstalled(true);
             return;
           }
         }
         for (MapBean mapBean : change.getRemoved()) {
-          if (map.getId().equals(mapBean.getId())) {
+          if(map.getFolderName().equals(mapBean.getFolderName())){
             setInstalled(false);
             return;
           }
@@ -88,10 +89,12 @@ public class MapCardController implements Controller<Node> {
     MapSize size = map.getSize();
     sizeLabel.setText(i18n.get("mapPreview.size", size.getWidthInKm(), size.getHeightInKm()));
     maxPlayersLabel.setText(i18n.number(map.getPlayers()));
+    installedLabel.setText("\uF019");
 
     ObservableList<MapBean> installedMaps = mapService.getInstalledMaps();
     synchronized (installedMaps) {
       installedMaps.addListener(new WeakListChangeListener<>(installedMapsChangeListener));
+      setInstalled(installedMaps.contains(map));
     }
 
     ObservableList<Review> reviews = map.getReviews();
@@ -109,6 +112,8 @@ public class MapCardController implements Controller<Node> {
 
   private void setInstalled(boolean installed) {
     // FIXME implement
+    installedLabel.setVisible(installed);
+
   }
 
   public Node getRoot() {

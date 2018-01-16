@@ -35,6 +35,7 @@ public class ModCardController implements Controller<Node> {
   public Label createdLabel;
   public Label numberOfReviewsLabel;
   public Label typeLabel;
+  public Label installedLabel;
   private Mod mod;
   private Consumer<Mod> onOpenDetailListener;
   private ListChangeListener<Mod> installStatusChangeListener;
@@ -78,7 +79,7 @@ public class ModCardController implements Controller<Node> {
   }
 
   private void setInstalled(boolean installed) {
-    //TODO:IMPLEMENT ISSUE #670
+    installedLabel.setVisible(installed);
   }
 
   public void setMod(Mod mod) {
@@ -88,10 +89,12 @@ public class ModCardController implements Controller<Node> {
     authorLabel.setText(mod.getUploader());
     createdLabel.setText(timeService.asDate(mod.getCreateTime()));
     typeLabel.setText(mod.getModType() != null ? i18n.get(mod.getModType().getI18nKey()) : "");
+    installedLabel.setText("\uF019");
 
     ObservableList<Mod> installedMods = modService.getInstalledMods();
     synchronized (installedMods) {
       installedMods.addListener(new WeakListChangeListener<>(installStatusChangeListener));
+      setInstalled(installedMods.contains(mod));
     }
     ObservableList<Review> reviews = mod.getReviews();
     reviews.addListener(new WeakInvalidationListener(reviewsChangedListener));

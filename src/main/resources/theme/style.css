@@ -326,6 +326,11 @@
   -fx-background: -card-color;
 }
 
+.card .installed {
+  -fx-font-family: 'dfc-icons';
+  -fx-text-fill: green;
+}
+
 /*******************************************************************************
  *                                                                             *
  * Button, ToggleButton & MenuButton                                           *
@@ -1495,6 +1500,11 @@
 
 .secondary {
   -fx-text-fill: -secondary-text-color;
+}
+
+.installed {
+  -fx-font-family: 'dfc-icons';
+  -fx-text-fill: green;
 }
 
 /***************** Login *****************/
