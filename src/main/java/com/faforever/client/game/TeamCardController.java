@@ -72,12 +72,14 @@ public class TeamCardController implements Controller<Node> {
         continue;
       }
       PlayerCardTooltipController playerCardTooltipController = uiService.loadFxml("theme/player_card_tooltip.fxml");
-      playerCardTooltipController.setPlayer(player);
+      int playerRating = RatingUtil.getRating(ratingProvider.apply(player));
+      playerCardTooltipController.setPlayerWithRating(player, playerRating);
+      totalRating += playerRating;
+
       RatingChangeLabelController ratingChangeLabelController = uiService.loadFxml("theme/rating_change_label.fxml");
       ratingChangeControllersByPlayerId.put(player.getId(), ratingChangeLabelController);
       HBox container = new HBox(playerCardTooltipController.getRoot(), ratingChangeLabelController.getRoot());
       teamPane.getChildren().add(container);
-      totalRating += RatingUtil.getRating(ratingProvider.apply(player));
     }
 
     String teamTitle;
