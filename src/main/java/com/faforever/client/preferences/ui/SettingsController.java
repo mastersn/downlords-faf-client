@@ -1,6 +1,7 @@
 package com.faforever.client.preferences.ui;
 
 import com.faforever.client.chat.ChatColorMode;
+import com.faforever.client.chat.ChatFormat;
 import com.faforever.client.fx.Controller;
 import com.faforever.client.fx.StringListCell;
 import com.faforever.client.i18n.I18n;
@@ -102,7 +103,7 @@ public class SettingsController implements Controller<Node> {
   public PasswordField newPasswordField;
   public PasswordField confirmPasswordField;
   public ComboBox<TimeInfo> timeComboBox;
-  public ComboBox<String> chatComboBox;
+  public ComboBox<ChatFormat> chatComboBox;
   public Label passwordChangeErrorLabel;
   public Label passwordChangeSuccessLabel;
   private ChangeListener<Theme> themeChangeListener;
@@ -252,8 +253,9 @@ public class SettingsController implements Controller<Node> {
 
 
   private void configureChatSetting(Preferences preferences) {
-    //TODO: observableArrayList contains fixed strings...
-    chatComboBox.setItems(FXCollections.observableArrayList("Extended", "Compact"));
+    chatComboBox.setButtonCell(new StringListCell<>(chatFormat -> i18n.get(chatFormat.getI18nKey())));
+    chatComboBox.setCellFactory(param -> new StringListCell<>(chatFormat -> i18n.get(chatFormat.getI18nKey())));
+    chatComboBox.setItems(FXCollections.observableArrayList(ChatFormat.values()));
     chatComboBox.setDisable(false);
     chatComboBox.setFocusTraversable(true);
     chatComboBox.getSelectionModel().select(preferences.getChat().getChatFormat());

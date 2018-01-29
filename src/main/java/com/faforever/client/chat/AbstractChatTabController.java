@@ -108,6 +108,7 @@ public abstract class AbstractChatTabController implements Controller<Tab> {
 
   static final String CSS_CLASS_CHAT_ONLY = "chat_only";
   private static final String MESSAGE_CONTAINER_ID = "chat-container";
+  private static final String COMPACT_MESSAGE_CONTAINER_ID = "first-compact-chat-message-";
   private static final String MESSAGE_ITEM_CLASS = "chat-section";
   private static final PseudoClass UNREAD_PSEUDO_STATE = PseudoClass.getPseudoClass("unread");
   private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -648,16 +649,18 @@ public abstract class AbstractChatTabController implements Controller<Tab> {
    */
   private void addMessage(ChatMessage chatMessage) {
     noCatch(() -> {
+      boolean isFirstMessage = false;
       if (lastMessage == null || !lastMessage.getUsername().equals(chatMessage.getUsername())
           || lastMessage.getTime().isBefore(chatMessage.getTime().minus(1, MINUTES))) {
         addChatSection(chatMessage);
+        isFirstMessage = true;
       }
-      appendMessage(chatMessage);
+      appendMessage(chatMessage, isFirstMessage);
       lastMessage = chatMessage;
     });
   }
 
-  private void appendMessage(ChatMessage chatMessage) throws IOException {
+  private void appendMessage(ChatMessage chatMessage, boolean isFirstMessage) throws IOException {
     try (Reader reader = new InputStreamReader(uiService.getThemeFileUrl(CHAT_TEXT).openStream())) {
       String text = htmlEscaper().escape(chatMessage.getMessage()).replace("\\", "\\\\");
       text = convertUrlsToHyperlinks(text);
@@ -670,10 +673,8 @@ public abstract class AbstractChatTabController implements Controller<Tab> {
 
       String containerId = "chat-section-";
       String html = CharStreams.toString(reader);
-      if (preferencesService.getPreferences().getChat().getChatFormat().equals("Compact")) {
-
-        if (lastMessage == null || !lastMessage.getUsername().equals(chatMessage.getUsername())
-            || lastMessage.getTime().isBefore(chatMessage.getTime().minus(1, MINUTES))) {
+      if (preferencesService.getPreferences().getChat().getChatFormat().equals(ChatFormat.COMPACT)) {
+        if (isFirstMessage) {
           html = "<td class=\"text {css-classes}\">{text}</td>";
           containerId = "first-compact-chat-message-";
         } else {
@@ -699,10 +700,10 @@ public abstract class AbstractChatTabController implements Controller<Tab> {
     Player player = playerService.getPlayerForUsername(chatMessage.getUsername());
     URL themeFileURL;
     switch (preferencesService.getPreferences().getChat().getChatFormat()) {
-      case "Extended":
+      case EXTENDED:
         themeFileURL = uiService.getThemeFileUrl(CHAT_ENTRY);
         break;
-      case "Compact":
+      case COMPACT:
         themeFileURL = uiService.getThemeFileUrl(CHAT_ENTRY_COMPACT);
         break;
       default:

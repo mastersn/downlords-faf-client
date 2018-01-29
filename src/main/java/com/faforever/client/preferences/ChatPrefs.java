@@ -1,6 +1,7 @@
 package com.faforever.client.preferences;
 
 import com.faforever.client.chat.ChatColorMode;
+import com.faforever.client.chat.ChatFormat;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
@@ -11,8 +12,6 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleMapProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
 import javafx.scene.paint.Color;
@@ -30,7 +29,7 @@ public class ChatPrefs {
   private final MapProperty<String, Color> userToColor;
   private final BooleanProperty hideFoeMessages;
   private final ObjectProperty<TimeInfo> timeFormat;
-  private final StringProperty chatFormat;
+  private final ObjectProperty<ChatFormat> chatFormat;
 
   /**
    * Time in minutes a player has to be inactive to be considered idle.
@@ -48,7 +47,7 @@ public class ChatPrefs {
     userToColor = new SimpleMapProperty<>(FXCollections.observableHashMap());
     chatColorMode = new SimpleObjectProperty<>(CUSTOM);
     idleThreshold = new SimpleIntegerProperty(10);
-    chatFormat = new SimpleStringProperty("Extended");
+    chatFormat = new SimpleObjectProperty<>(ChatFormat.EXTENDED);
   }
 
   public ChatColorMode getChatColorMode() {
@@ -67,12 +66,12 @@ public class ChatPrefs {
     this.timeFormat.set(time);
   }
 
-  public String getChatFormat() {
+  public ChatFormat getChatFormat() {
     return this.chatFormat.get();
   }
 
-  public void setChatFormat(String chatFormat) {
-    this.chatFormat.set(chatFormat);
+  public void setChatFormat(ChatFormat chatFormat) {
+    this.chatFormat.setValue(chatFormat);
   }
 
   public ObjectProperty<ChatColorMode> chatColorModeProperty() {
@@ -175,5 +174,4 @@ public class ChatPrefs {
   public IntegerProperty idleThresholdProperty() {
     return idleThreshold;
   }
-
 }
