@@ -119,6 +119,10 @@ public class GamesTableController implements Controller<Node> {
         -> Platform.runLater(() -> selectedGame.set(newValue)));
   }
 
+  public void setModsColumnVisibility(boolean isVisible) {
+    modsColumn.setVisible(isVisible);
+  }
+
   private void applyLastSorting(TableView<Game> gamesTable) {
     final Map<String, SortType> lookup = new HashMap<>();
     final ObservableList<TableColumn<Game, ?>> sortOrder = gamesTable.getSortOrder();

@@ -59,6 +59,9 @@ public class CustomGamesController implements Controller<Node> {
   private final I18n i18n;
   public GameDetailController gameDetailController;
 
+  private GamesTableController gamesTableController;
+  private GamesTilesContainerController gamesTilesContainerController;
+
   public ToggleButton tableButton;
   public ToggleButton tilesButton;
   public ToggleGroup viewToggleGroup;
@@ -74,6 +77,8 @@ public class CustomGamesController implements Controller<Node> {
   public CheckBox showModdedGamesCheckBox;
   public CheckBox showPasswordProtectedGamesCheckBox;
   private final ChangeListener<Boolean> filterConditionsChangedListener = (observable, oldValue, newValue) -> updateFilteredItems();
+  private final ChangeListener<Boolean> showModsColumnChangedListener =(observable, oldValue, newValue)
+      -> gamesTableController.setModsColumnVisibility(newValue);
 
   @Inject
   public CustomGamesController(UiService uiService, GameService gameService, PreferencesService preferencesService,
@@ -86,6 +91,9 @@ public class CustomGamesController implements Controller<Node> {
   }
 
   public void initialize() {
+    gamesTableController = uiService.loadFxml("theme/play/games_table.fxml");
+    gamesTilesContainerController = uiService.loadFxml("theme/play/games_tiles_container.fxml");
+
     chooseSortingTypeChoiceBox.setVisible(false);
     chooseSortingTypeChoiceBox.setConverter(new StringConverter<TilesSortingOrder>() {
       @Override
@@ -109,12 +117,15 @@ public class CustomGamesController implements Controller<Node> {
     preferencesService.getPreferences().showModdedGamesProperty().addListener(new WeakChangeListener<>(filterConditionsChangedListener));
     preferencesService.getPreferences().showPasswordProtectedGamesProperty().addListener(new WeakChangeListener<>(filterConditionsChangedListener));
 
+    preferencesService.getPreferences().showModdedGamesProperty().addListener(new WeakChangeListener<>(showModsColumnChangedListener));
+
     if (tilesButton.getId().equals(preferencesService.getPreferences().getGamesViewMode())) {
       viewToggleGroup.selectToggle(tilesButton);
       tilesButton.getOnAction().handle(null);
     } else {
       viewToggleGroup.selectToggle(tableButton);
       tableButton.getOnAction().handle(null);
+      gamesTableController.setModsColumnVisibility(showModdedGamesCheckBox.selectedProperty().getValue());
     }
     viewToggleGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
       if (newValue == null) {
@@ -173,7 +184,6 @@ public class CustomGamesController implements Controller<Node> {
   }
 
   public void onTableButtonClicked() {
-    GamesTableController gamesTableController = uiService.loadFxml("theme/play/games_table.fxml");
     gamesTableController.selectedGameProperty()
         .addListener((observable, oldValue, newValue) -> setSelectedGame(newValue));
     Platform.runLater(() -> {
@@ -194,7 +204,6 @@ public class CustomGamesController implements Controller<Node> {
   }
 
   public void onTilesButtonClicked() {
-    GamesTilesContainerController gamesTilesContainerController = uiService.loadFxml("theme/play/games_tiles_container.fxml");
     gamesTilesContainerController.selectedGameProperty()
         .addListener((observable, oldValue, newValue) -> setSelectedGame(newValue));
     chooseSortingTypeChoiceBox.getItems().clear();
