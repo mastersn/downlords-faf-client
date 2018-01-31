@@ -79,6 +79,8 @@ public class CustomGamesController implements Controller<Node> {
   private final ChangeListener<Boolean> filterConditionsChangedListener = (observable, oldValue, newValue) -> updateFilteredItems();
   private final ChangeListener<Boolean> showModsColumnChangedListener =(observable, oldValue, newValue)
       -> gamesTableController.setModsColumnVisibility(newValue);
+  private final ChangeListener<Boolean> showPasswordColumnChangedListener =(observable, oldValue, newValue)
+      -> gamesTableController.setPasswordProtectionColumnVisibility(newValue);
 
   @Inject
   public CustomGamesController(UiService uiService, GameService gameService, PreferencesService preferencesService,
@@ -118,10 +120,12 @@ public class CustomGamesController implements Controller<Node> {
     preferencesService.getPreferences().showPasswordProtectedGamesProperty().addListener(new WeakChangeListener<>(filterConditionsChangedListener));
 
     preferencesService.getPreferences().showModdedGamesProperty().addListener(new WeakChangeListener<>(showModsColumnChangedListener));
+    preferencesService.getPreferences().showPasswordProtectedGamesProperty().addListener(new WeakChangeListener<>(showPasswordColumnChangedListener));
 
     if (tilesButton.getId().equals(preferencesService.getPreferences().getGamesViewMode())) {
       viewToggleGroup.selectToggle(tilesButton);
       tilesButton.getOnAction().handle(null);
+      gamesTableController.setPasswordProtectionColumnVisibility(showPasswordProtectedGamesCheckBox.selectedProperty().getValue());
     } else {
       viewToggleGroup.selectToggle(tableButton);
       tableButton.getOnAction().handle(null);

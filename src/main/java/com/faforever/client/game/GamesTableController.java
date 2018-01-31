@@ -123,6 +123,10 @@ public class GamesTableController implements Controller<Node> {
     modsColumn.setVisible(isVisible);
   }
 
+  public void setPasswordProtectionColumnVisibility(boolean isVisible) {
+    passwordProtectionColumn.setVisible(isVisible);
+  }
+
   private void applyLastSorting(TableView<Game> gamesTable) {
     final Map<String, SortType> lookup = new HashMap<>();
     final ObservableList<TableColumn<Game, ?>> sortOrder = gamesTable.getSortOrder();
